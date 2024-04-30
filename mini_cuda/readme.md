@@ -2,7 +2,7 @@ when we talk about cuda programming, it is always suffering to read some code si
 
 Let's figure it out.
 
-## compile
+## Compile
 
 ```
 nvcc matrix_multi.cu -o matrix_multi
@@ -10,19 +10,15 @@ nvcc matrix_multi.cu -o matrix_multi
 
 this code could helps to check if your cuda compiler works for further steps...
 
-
-
-## requirements
+## Requirements
 
 install cuda, and check it via
 
 `nvcc -V`
 
-
 ## Run
 
 `./matrix_multi`
-
 
 ## Further learning
 
