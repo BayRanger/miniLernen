@@ -28,3 +28,5 @@ nvcc ismax.c --verbose -lcublas -o ismax
 https://developer.nvidia.com/sites/default/files/akamai/cuda/files/Misc/mygpu.pdf
 
 http://courses.cms.caltech.edu/cs179/2023_lectures/cs179_2023_lec10.pdf
+
+https://www.olcf.ornl.gov/tutorials/opencl-vector-addition/
