@@ -21,6 +21,8 @@ gcc -o addArrays addArrays.cc -lOpenCL
 
 # Reference
 
+https://github.com/gcielniak/OpenCL-Tutorials/tree/master
+
 https://ulhpc-tutorials.readthedocs.io/en/latest/gpu/opencl/#:~:text=Compiling%20an%20OpenCL%20code%3A,flag%20to%20the%20compilation%20command.
 
 https://github.com/KhronosGroup/OpenCL-Guide/blob/main/chapters/getting_started_linux.md

@@ -22,6 +22,10 @@ install cuda, and check it via
 
 ## Further learning
 
+good blog
+
+https://siboehm.com/articles/22/CUDA-MMM
+
 This lecture has a good note!
 
 https://users.wfu.edu/choss/CUDA/docs/
