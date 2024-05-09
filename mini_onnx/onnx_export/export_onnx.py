@@ -34,9 +34,9 @@ if __name__ =="__main__":
     #create dummpy input
     self_atten.load_state_dict(torch.load('atten_weights.pth'))
 
-    input_tensor = torch.ones(1, seq_length, input_dim) 
+    input_tensor = torch.ones(1, seq_length, input_dim)
 
-    onnx_path = f'{model_name}.onnx' 
+    onnx_path = f'{model_name}.onnx'
     #export the onnx model
     torch.onnx.export(self_atten,
                       input_tensor,
@@ -44,16 +44,16 @@ if __name__ =="__main__":
                       verbose = False,
                       input_names= ["query"],
                       output_names= ["attention_weights"] ,
-                      opset_version=16 
+                      opset_version=14
                       )
-    
+
     print(f"======================={onnx_path} export onnx done!")
- 
+
     #check the result
     torch_result = self_atten(input_tensor)
     #print(torch_result)
-    
+
     input_dicts = {}
     input_dicts["query"] = input_tensor.numpy()
-    onnxruntime_check(onnx_path, input_dicts, [torch_result])  
+    onnxruntime_check(onnx_path, input_dicts, [torch_result])
     print("success exit")
