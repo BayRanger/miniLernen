@@ -6,12 +6,18 @@ So, let's figure it out step by step
 * step 2: use the cuda kernel in your python code
 * step 3: integrate it into tensorrt inference engine
 
+there are two examples provided in the code, namely vector add and matrix multiply
+
 Let's figure it out.
 
 ## Compile
 
 ```
-nvcc matrix_multi.cu -o matrix_multi
+nvcc demo.cu -o demo 
+```
+
+```
+nvcc --keep -g matrix_multi.cu  -o mm -lcuda -v
 ```
 
 this code could helps to check if your cuda compiler works for further steps...
@@ -26,7 +32,7 @@ install cuda, and check it via
 
 ## Run
 
-`./matrix_multi`
+`./demo`
 
 ## Further learning
 
@@ -37,3 +43,7 @@ https://siboehm.com/articles/22/CUDA-MMM
 This lecture has a good note!
 
 https://users.wfu.edu/choss/CUDA/docs/
+
+for vector add
+
+https://www.olcf.ornl.gov/tutorials/cuda-vector-addition/
