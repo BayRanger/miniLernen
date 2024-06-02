@@ -15,7 +15,7 @@ Hello world
 ### CPU
 
 * neon(TODO)
-* 
+*
 
 ### GPU
 
@@ -43,8 +43,10 @@ Hello world
 
 #### Pytorch
 
-jit
+jit(TODO)
 
-torchscrpt
-
+torchscrpt(TODO)
 #### onnx
+
+* onnx export
+* onnx graphsurgeon
