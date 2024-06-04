@@ -28,6 +28,10 @@ combine graph
 """
 
 
+def show_node_info(node):
+    for input in node.inputs:
+        print(input)
+
 def onnx_add_output(onnx_path, ops_type = "MatMul", node_name= "MatMul_7"):
     #find the node
     graph = gs.import_onnx(onnx.load(onnx_path))
