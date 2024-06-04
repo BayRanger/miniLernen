@@ -8,10 +8,20 @@
  * https://users.wfu.edu/choss/CUDA/docs/Lecture%205.pdf
 */
 
+#define N 100
 
-#define N 16
 #include <stdio.h>
 #include <iostream>
+#include <cuda_runtime.h>
+
+// CUDA kernel for vector addition
+__global__ void vectorAdd(const float *A, const float *B, float *C, int numElements) {
+    int i = blockDim.x * blockIdx.x + threadIdx.x;
+    if (i < numElements) {
+        C[i] = A[i] + B[i];
+    }
+}
+
 
 __global__ void vecAdd(int* a, int* b, int* c, int n)
 {
@@ -55,7 +65,6 @@ void matrixMult (int a[N][N], int b[N][N], int c[N][N], int width)
     }
 }
 void test_GEMM() {
-
     int a[N][N], b[N][N], c[N][N];
     int *dev_a, *dev_b, *dev_c;
     // initialize matrices a and b with appropriate values
@@ -85,10 +94,11 @@ void test_GEMM() {
 
 void  test_vecAdd()
 {
+    int num  = 1<<10;
     //the size means SIZE in BYTE
-    int size = N* sizeof(int);
-    int a[N], b[N], c[N], c_gt[N];
-    for (int i=0; i<N; i++)
+    int size = num* sizeof(int);
+    int a[num], b[num], c[num], c_gt[num];
+    for (int i=0; i<num; i++)
     {
         a[i] = b[i] = i;
         c_gt[i] = a[i] + b[i];
@@ -110,15 +120,15 @@ void  test_vecAdd()
     blockSize = 256;
       
     // Number of thread blocks in grid
-    gridSize = ceil((float)N/blockSize);
+    gridSize = ceil((float)num/blockSize);
     // Execute the kernel
-    vecAdd<<< gridSize, blockSize >>>(dev_a, dev_b, dev_c, N);
+    vecAdd<<< gridSize, blockSize >>>(dev_a, dev_b, dev_c, num);
     //perform calcualtion and copy back data to host
     cudaMemcpy(c, dev_c, size, cudaMemcpyDeviceToHost);
     //free gpu memory acclocation
     cudaFree(dev_a); cudaFree(dev_b); cudaFree(dev_c);
     
-    for (int i=0; i <N; i++)
+    for (int i=0; i <num; i++)
     {
         std::cout<<"check "<<c[i]<<" vs "<<c_gt[i]<<std::endl;
         if(c[i] - c_gt[i]!=0)
@@ -126,15 +136,106 @@ void  test_vecAdd()
             std::cout<<"VectorAdd wrong\n";
             break;
         }
-        else if(i == N -1)
+        else if(i == num -1)
         {
             std::cout<<"vector add success!\n";
         }
     }
 }
 
+
+void test_big_vecadd()
+{
+    int numElements = 1<<20;
+    size_t size = numElements * sizeof(float);
+
+
+    //Allocate host memory
+    float* h_A = (float *)malloc(size);
+    float* h_B = (float *)malloc(size);
+    float* h_C = (float *)malloc(size);
+
+    // Initialize the host input vectors
+    for (int i = 0; i < numElements; ++i) {
+        h_A[i] = rand()/(float)RAND_MAX;
+        h_B[i] = rand()/(float)RAND_MAX;
+    }                     
+       // Initialize the host input vectors
+    for (int i = 0; i < numElements; ++i) {
+        h_A[i] = rand()/(float)RAND_MAX;
+        h_B[i] = rand()/(float)RAND_MAX;
+    }
+
+    // Allocate device memory
+    float *d_A = NULL;
+    float *d_B = NULL;
+    float *d_C = NULL;
+    cudaMalloc((void **)&d_A, size);
+    cudaMalloc((void **)&d_B, size);
+    cudaMalloc((void **)&d_C, size); 
+
+    // Copy the host input vectors to the device
+    cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);
+
+
+    // Launch the Vector Add CUDA Kernel
+    int threadsPerBlock = 256 *2 ;
+    int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
+
+
+    int numIterations = 100;
+    float totalMilliseconds = 0.0;
+
+    for (int i = 0; i < numIterations; ++i) {
+        // Start the timer
+        cudaEvent_t start, stop;
+        cudaEventCreate(&start);
+        cudaEventCreate(&stop);
+        cudaEventRecord(start);
+
+        vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements);
+
+        // Stop the timer
+        cudaEventRecord(stop);
+        cudaEventSynchronize(stop);
+
+        float milliseconds = 0;
+        cudaEventElapsedTime(&milliseconds, start, stop);
+        totalMilliseconds += milliseconds;
+
+        // Destroy the events
+        cudaEventDestroy(start);
+        cudaEventDestroy(stop);
+    }
+   
+    // Calculate the average time and performance in TOPS
+    float averageMilliseconds = totalMilliseconds / numIterations;
+    float averageSeconds = averageMilliseconds / 1000.0;
+    float averageTops = (numElements / averageSeconds) / 1e12;
+    printf("Average Performance: %.2f TOPS\n", averageTops);
+ 
+    
+    // Copy the device result vector to the host result vector
+    cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
+
+
+    // Free device global memory
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
+
+    // Free host memory
+    free(h_A);
+    free(h_B);
+    free(h_C);
+
+    return;
+
+}
+
+
 int main()
 {
-
-    test_vecAdd();
+	test_big_vecadd();
 }
