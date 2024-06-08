@@ -1,0 +1,69 @@
+typedef char __nv_bool;
+# 2795 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/driver_types.h"
+struct CUstream_st;
+# 209 "/usr/lib/gcc/x86_64-linux-gnu/9/include/stddef.h" 3
+typedef unsigned long size_t;
+#include "crt/device_runtime.h"
+# 258 "/usr/include/x86_64-linux-gnu/c++/9/bits/c++config.h" 3
+typedef unsigned long _ZSt6size_t;
+# 70 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/cuda_device_runtime_api.h"
+___device__(static  __no_sc__) __inline__ enum cudaError cudaMalloc(void **, size_t);
+# 159 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/cuda_device_runtime_api.h"
+___device__(extern  __no_sc__) enum cudaError cudaFree(void *);
+# 3309 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/crt/device_functions.h"
+___device__(extern  __no_sc__) unsigned __cudaPushCallConfiguration(struct dim3, struct dim3, size_t, struct CUstream_st *);
+# 14 "matrix_multi.cu"
+__global__ __var_used__ extern void _Z14matrixMultCudaPiS_S_i(int *, int *, int *, int);
+#include "common_functions.h"
+# 70 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/cuda_device_runtime_api.h"
+___device__(static  __no_sc__) __inline__ enum cudaError cudaMalloc(
+# 70 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/cuda_device_runtime_api.h"
+void **p, 
+# 70 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/cuda_device_runtime_api.h"
+size_t s){
+# 71 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/cuda_device_runtime_api.h"
+{
+# 72 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/cuda_device_runtime_api.h"
+return cudaErrorUnknown;
+# 73 "/usr/local/cuda-11.8/bin/../targets/x86_64-linux/include/cuda_device_runtime_api.h"
+}}
+# 14 "matrix_multi.cu"
+__global__ __var_used__ void _Z14matrixMultCudaPiS_S_i(
+# 14 "matrix_multi.cu"
+int *a, 
+# 14 "matrix_multi.cu"
+int *b, 
+# 14 "matrix_multi.cu"
+int *c, 
+# 14 "matrix_multi.cu"
+int width){
+# 15 "matrix_multi.cu"
+{
+# 16 "matrix_multi.cu"
+ int __cuda_local_var_24184_10_non_const_k;
+# 16 "matrix_multi.cu"
+ int __cuda_local_var_24184_13_non_const_sum;
+# 17 "matrix_multi.cu"
+ int __cuda_local_var_24185_9_non_const_col;
+# 18 "matrix_multi.cu"
+ int __cuda_local_var_24186_9_non_const_row;
+# 16 "matrix_multi.cu"
+__cuda_local_var_24184_13_non_const_sum = 0;
+# 17 "matrix_multi.cu"
+__cuda_local_var_24185_9_non_const_col = ((int)((threadIdx.x) + ((blockDim.x) * (blockIdx.x))));
+# 18 "matrix_multi.cu"
+__cuda_local_var_24186_9_non_const_row = ((int)((threadIdx.y) + ((blockDim.y) * (blockIdx.y))));
+# 19 "matrix_multi.cu"
+if ((__cuda_local_var_24185_9_non_const_col < width) && (__cuda_local_var_24186_9_non_const_row < width))
+# 20 "matrix_multi.cu"
+{
+# 21 "matrix_multi.cu"
+for (__cuda_local_var_24184_10_non_const_k = 0; (__cuda_local_var_24184_10_non_const_k < width); __cuda_local_var_24184_10_non_const_k++) {
+# 22 "matrix_multi.cu"
+__cuda_local_var_24184_13_non_const_sum += ((a[((__cuda_local_var_24186_9_non_const_row * width) + __cuda_local_var_24184_10_non_const_k)]) * (b[((__cuda_local_var_24184_10_non_const_k * width) + __cuda_local_var_24185_9_non_const_col)])); }
+# 24 "matrix_multi.cu"
+(c[((__cuda_local_var_24186_9_non_const_row * width) + __cuda_local_var_24185_9_non_const_col)]) = __cuda_local_var_24184_13_non_const_sum;
+# 26 "matrix_multi.cu"
+} 
+# 27 "matrix_multi.cu"
+}}

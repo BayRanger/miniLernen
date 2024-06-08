@@ -1,10 +1,13 @@
+#define CL_TARGET_OPENCL_VERSION 220  //opencl 2.2
 #include <stdio.h>
 #include <stdlib.h>
 #include <CL/cl.h>
 
 #define ARRAY_SIZE 100
 
+
 // Kernel function to add two arrays element-wise
+//set kernel file in a string, it is weird but it is how it works...
 const char *kernelSource = 
 "__kernel void addArrays(__global const float *a, __global const float *b, __global float *result) {\n"
 "    int i = get_global_id(0);\n"
@@ -12,6 +15,7 @@ const char *kernelSource =
 "}\n";
 
 int main() {
+    printf(">>> Initializing OpenCL...\n");
     cl_platform_id platform;
     cl_device_id device;
     cl_context context;
